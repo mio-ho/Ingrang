@@ -12,17 +12,23 @@ namespace UGDR
     class udb
     {
         static int use = 0;
-        void save()
+        public static void save(string sql)
         {
             if (use == 0)
             {
+                use = 1;
                 string connStr = @"Data Source=Ingrang.db";
 
                 var con = new SQLiteConnection(connStr);
                 con.Open();
-
+                using (var cmd = new SQLiteCommand(con))
+                {
+                    cmd.CommandText = sql;
+                    cmd.ExecuteNonQuery();
+                }
 
                 con.Close();
+                use = 0;
             }
         }
     }

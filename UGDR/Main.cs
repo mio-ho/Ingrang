@@ -20,7 +20,7 @@ namespace UGDR
         private void metroButton1_Click(object sender, EventArgs e)
         {
             Suzip sz1 = new Suzip();
-            sz1.GetB(4745366);
+            sz1.GetB(4743092);
         }
     }
 }
