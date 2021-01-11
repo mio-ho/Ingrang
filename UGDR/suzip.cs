@@ -13,6 +13,13 @@ namespace UGDR
 {
     class Suzip
     {
+        private string[] nibu(string mizuki, string akari)
+        {
+
+
+
+            return mizuki.Split(new string[] { akari },StringSplitOptions.None);
+        }
         private string asuka(string mizuki,Regex pattern,int option)
         {
             MatchCollection resultColl = pattern.Matches(mizuki);
@@ -202,8 +209,29 @@ namespace UGDR
 
 
             string[] c_id;
-            c_id = Asuka(responseText2, new Regex("\"nick\">(.*)<"), 1);
+            c_id = nibu(responseText2,"\"nick\">");
 
+            for(int bemiho = 1;bemiho <= Int32.Parse(C_cmt);bemiho++)
+            {
+                string cc_nick = asuka(c_id[bemiho].Substring(0, 20), new Regex("(.*)<span class"),1);
+                string cc_content = asuka(c_id[bemiho], new Regex("<p class=\"txt\">(.*)</p>"), 1);
+                string cc_date = asuka(c_id[bemiho], new Regex("<span class=\"date\">(.*)</span>  "), 1);
+                string cc_id="X";
+                string cc_ip="0";
+                try
+                {
+                     cc_id = asuka(c_id[bemiho], new Regex("data-info=(.*) ></span>"), 1);
+                }
+                catch
+                {
+                    cc_ip = asuka(c_id[bemiho], new Regex("ip blockCommentIp\">(.*)</sapn>"), 1); //sapn?????????
+                    cc_ip = cc_ip.Substring(1, cc_ip.Length - 2);
+                }
+                sql = "INSERT OR REPLACE INTO c_Ranking VALUES(";
+                sql += num + ",\"" + nickN + "\",\"" + cc_nick + "\",\"" + cc_content + "\",\"" + cc_date + "\",\"" + cc_ip + "\",\"" + cc_id + "\")";
+                udb.save(sql);
+
+            }
 
         }
     }
