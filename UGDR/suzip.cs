@@ -88,6 +88,7 @@ namespace UGDR
             {
                 title = null;
             }
+            if (title == null) return;
             string kitano = asuka(responseText, new Regex(@"thum-txtin\"">(.*)<div class=\""reco-search\""",RegexOptions.Singleline),1);
             //내용 원본
 
@@ -119,14 +120,7 @@ namespace UGDR
             recomN = asuka(responseText, new Regex(@"recomm_btn"">(.*)</span>"), 1);//추천수
             hantai = asuka(responseText, new Regex(@"nonrecomm_btn"">(.*)</span>"), 1);//비추
             
-            try
-            {
-                idN = asuka(responseText, new Regex(@"dcinside.com/gallog/(.*)\"" class="), 1); //ID
-            }
-            catch
-            {
-                idN = "X";
-            }
+            
             try
             {
                 timeY = asuka(responseText, new Regex(@"<li>20(.*)</li>"), 1);
@@ -142,9 +136,18 @@ namespace UGDR
             {//닉네임
                 nickN = asuka(responseText, new Regex(@"ginfo2(.*)\t<li>20",RegexOptions.Singleline), 1);
                 nickN = asuka(nickN, new Regex(@"<li>(.*)</li>",RegexOptions.Singleline), 1);
+                idN = "X";
                 try
                 {
                     nickN = asuka(nickN, new Regex(@"(.*)<span", RegexOptions.Singleline), 1);
+                    try
+                    {
+                        idN = asuka(responseText, new Regex(@"dcinside.com/gallog/(.*)\"" class="), 1); //ID
+                    }
+                    catch
+                    {
+                        idN = "X";
+                    }
                 }
                 catch { }
                 ipN = asuka(nickN,new Regex(@"\((.*)\)"),1);
@@ -213,7 +216,7 @@ namespace UGDR
 
             for(int bemiho = 1;bemiho <= Int32.Parse(C_cmt);bemiho++)
             {
-                string cc_nick = asuka(c_id[bemiho].Substring(0, 20), new Regex("(.*)<span class"),1);
+                string cc_nick = asuka(c_id[bemiho].Substring(0, 30), new Regex("(.*)<span class"),1);
                 string cc_content = asuka(c_id[bemiho], new Regex("<p class=\"txt\">(.*)</p>"), 1);
                 string cc_date = asuka(c_id[bemiho], new Regex("<span class=\"date\">(.*)</span>  "), 1);
                 string cc_id="X";
@@ -228,6 +231,9 @@ namespace UGDR
                     cc_ip = cc_ip.Substring(1, cc_ip.Length - 2);
                 }
                 sql = "INSERT OR REPLACE INTO c_Ranking VALUES(";
+                if (cc_content.Contains("written_dccon") || cc_content.Contains("img src")) cc_content = "DCCON";
+                if (cc_content.Contains("m4a")) cc_content = "VOPLE";
+
                 sql += num + ",\"" + nickN + "\",\"" + cc_nick + "\",\"" + cc_content + "\",\"" + cc_date + "\",\"" + cc_ip + "\",\"" + cc_id + "\")";
                 udb.save(sql);
 

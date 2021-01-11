@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,8 +20,20 @@ namespace UGDR
 
         private void metroButton1_Click(object sender, EventArgs e)
         {
-            Suzip sz1 = new Suzip();
-            sz1.GetB(4743092);
+
+            Thread td1 = new Thread(() => testtest());
+            td1.Start();
+
         }
+        void testtest()
+        {
+            Suzip sz1 = new Suzip();
+            for (int test = 4743104; test <= 4743297; test++)
+            {
+                sz1.GetB(test);
+            }
+            
+        }
+
     }
 }
